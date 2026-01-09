@@ -1,33 +1,48 @@
 import { useQuery } from '@tanstack/react-query';
+import { useEffect, useState } from 'react';
 import { fetchCurrentWeather } from '@/entities/weather/api/weather.api';
 import type { CurrentWeatherResponse } from '@/entities/weather/model/weather.types';
+import { getCurrentPosition } from '@/shared/lib/geolocation';
 
 export function HomePage() {
-  // 서울 테스트
-  const lat = 37.5665;
-  const lon = 126.978;
+  const [coords, setCoords] = useState<{
+    lat: number;
+    lon: number;
+  } | null>(null);
 
-  const { data, isLoading, error } = useQuery<CurrentWeatherResponse>({
-    queryFn: () => fetchCurrentWeather({ lat, lon }),
-    queryKey: ['weather', lat, lon],
-  });
+  const [error, setError] = useState<string | null>(null);
 
-  if (isLoading) return <p>로딩 중...</p>;
-  if (error) return <p>에러 발생: {(error as Error).message}</p>;
-  if (!data) return null;
+  useEffect(() => {
+    getCurrentPosition()
+      .then(position => {
+        setCoords({
+          lat: position.coords.latitude,
+          lon: position.coords.longitude,
+        });
+      })
+      .catch(() => {
+        setError('위치 권한이 필요합니다.');
+      });
+  }, []);
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  if (!coords) {
+    return <div>위치 정보를 불러오는 중...</div>;
+  }
 
   return (
     <div className="p-5">
-      <h1>현재 날씨 테스트</h1>
+      <div className="p-5">
+        <h2>현재 위치 정보</h2>
 
-      <div>
-        <p>설명: {data.weather[0]?.description}</p>
-        <p>현재: {data.main.temp}°C</p>
-        <p>최저: {data.main.temp_min}°C</p>
-        <p>최고: {data.main.temp_max}°C</p>
+        <div>
+          <p>lat: {coords.lat}</p>
+          <p>lon: {coords.lon}</p>
+        </div>
       </div>
-
-      <pre className="mt-4 overflow-auto rounded bg-gray-100 p-4 text-xs">{JSON.stringify(data, null, 2)}</pre>
     </div>
   );
 }
