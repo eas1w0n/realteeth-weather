@@ -1,4 +1,4 @@
-export type CurrentWeatherResponse = {
+export interface CurrentWeatherResponse {
   weather: Array<{
     main: string;
     description: string;
@@ -12,4 +12,4 @@ export type CurrentWeatherResponse = {
   };
 
   name: string;
-};
+}
