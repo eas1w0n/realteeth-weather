@@ -25,10 +25,13 @@ export async function fetchAddressFromCoords(lat: number, lon: number): Promise<
   }
 
   const address = data[0];
+
+  const koName = address.local_names?.ko ?? address.name;
+
   return {
     depth1: address.state,
-    depth2: address.name,
+    depth2: koName,
     depth3: address.local_names?.ko,
-    fullName: address.state ? `${address.state} ${address.name}` : address.name,
+    fullName: address.state ? `${address.state} ${koName}` : koName,
   };
 }
