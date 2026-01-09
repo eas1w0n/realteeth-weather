@@ -1,7 +1,11 @@
-import './App.css';
+import { HomePage } from '@/pages/home/ui/Homepage';
 
 function App() {
-  return <></>;
+  return (
+    <div>
+      <HomePage />
+    </div>
+  );
 }
 
 export default App;
