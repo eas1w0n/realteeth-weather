@@ -1,4 +1,5 @@
 import { BASE_URL } from '@/shared/lib/constants';
+import { WEATHER_API_PATH } from '@/shared/lib/constants';
 
 type FetchCurrentWeatherParams = {
   lat: number;
@@ -14,7 +15,7 @@ export async function fetchCurrentWeather({ lat, lon, units = 'metric', lang = '
     throw new Error('VITE_OPENWEATHER_API_KEY is missing');
   }
 
-  const url = new URL(`${BASE_URL}/weather`);
+  const url = new URL(`${BASE_URL}${WEATHER_API_PATH}/weather`);
   url.searchParams.set('lat', String(lat));
   url.searchParams.set('lon', String(lon));
   url.searchParams.set('appid', apiKey);
