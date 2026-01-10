@@ -1,4 +1,4 @@
-import type { ForecastItem } from '../model/forecast.types';
+import type { ForecastItem } from './types';
 
 // 오늘 날짜
 export function getTodayForecast(list: ForecastItem[]): ForecastItem[] {

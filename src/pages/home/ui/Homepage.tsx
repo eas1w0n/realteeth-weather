@@ -4,7 +4,7 @@ import { fetchCurrentWeather } from '@/entities/weather/api/weather.api';
 import { getCurrentPosition } from '@/shared/lib/geolocation';
 import { fetchAddressFromCoords } from '@/shared/api/geocoding';
 import { fetchForecast } from '@/entities/weather/api/forecast.api';
-import { getHourlyTemps, getMinMaxTemp, getTodayForecast } from '@/entities/weather/lib/forecast.utils';
+import { getHourlyTemps, getMinMaxTemp, getTodayForecast } from '@/entities/weather/utils';
 
 export function HomePage() {
   const [coords, setCoords] = useState<{
@@ -53,6 +53,7 @@ export function HomePage() {
     queryKey: ['reverse-geocoding', coords?.lat, coords?.lon],
     queryFn: () => fetchAddressFromCoords(coords!.lat, coords!.lon),
     enabled: !!coords,
+    staleTime: 10 * 60 * 1000,
   });
 
   if (error) {
