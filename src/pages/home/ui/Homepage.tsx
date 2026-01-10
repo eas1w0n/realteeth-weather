@@ -2,7 +2,6 @@ import { useQuery } from '@tanstack/react-query';
 import { useEffect, useState } from 'react';
 import { fetchCurrentWeather } from '@/entities/weather/api/weather.api';
 import { getCurrentPosition } from '@/shared/lib/geolocation';
-import type { Address } from '@/shared/api/geocoding';
 import { fetchAddressFromCoords } from '@/shared/api/geocoding';
 import { fetchForecast } from '@/entities/weather/api/forecast.api';
 import { getHourlyTemps, getMinMaxTemp, getTodayForecast } from '@/entities/weather/lib/forecast.utils';
@@ -14,10 +13,6 @@ export function HomePage() {
   } | null>(null);
 
   const [error, setError] = useState<string | null>(null);
-
-  const [address, setAddress] = useState<Address | null>(null);
-
-  const [addressError, setAddressError] = useState(false);
 
   // 위치 요청
   useEffect(() => {
@@ -33,22 +28,6 @@ export function HomePage() {
       });
   }, []);
 
-  // reverse geocoding
-  useEffect(() => {
-    if (!coords) return;
-
-    fetchAddressFromCoords(coords.lat, coords.lon)
-      .then(result => {
-        setAddress(result);
-        setAddressError(false);
-      })
-      .catch(() => {
-        setAddress(null);
-        setAddressError(true);
-      });
-  }, [coords]);
-
-  // weather api query
   const {
     data: weather,
     isLoading: weatherLoading,
@@ -58,6 +37,7 @@ export function HomePage() {
     queryFn: () => fetchCurrentWeather({ lat: coords!.lat, lon: coords!.lon }),
     enabled: !!coords,
   });
+
   const {
     data: forecast,
     isLoading: forecastLoading,
@@ -65,6 +45,13 @@ export function HomePage() {
   } = useQuery({
     queryKey: ['forecast', coords],
     queryFn: () => fetchForecast(coords!),
+    enabled: !!coords,
+  });
+
+  // reverse geocoding
+  const addressQuery = useQuery({
+    queryKey: ['reverse-geocoding', coords?.lat, coords?.lon],
+    queryFn: () => fetchAddressFromCoords(coords!.lat, coords!.lon),
     enabled: !!coords,
   });
 
@@ -91,7 +78,7 @@ export function HomePage() {
 
   return (
     <div className="p-5">
-      <h1 className="text-lg font-bold">현재 위치: {address?.fullName ?? '위치 정보 없음'}</h1>
+      <h1 className="text-lg font-bold">현재 위치: {addressQuery.data?.fullName ?? '위치 정보 없음'}</h1>
 
       <p>현재 기온: {weather.main.temp}°C</p>
       <p>최저 기온: {min}°C</p>
