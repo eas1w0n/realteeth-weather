@@ -27,19 +27,21 @@ export function HomePage() {
   const { weatherQuery, forecastQuery, addressQuery } = useHomeWeather(coords);
 
   // -------- UI 분기 --------
-  if (error) {
-    return <div>{error}</div>;
-  }
-  if (!coords) {
-    return <div>위치 정보를 불러오는 중...</div>;
-  }
-  if (weatherQuery.isLoading || forecastQuery.isLoading) return <div>날씨 정보를 불러오는 중...</div>;
+  if (error) return <div>{error}</div>;
+  if (!coords) return <div>위치 정보를 불러오는 중...</div>;
 
+  if (weatherQuery.isLoading || forecastQuery.isLoading) return <div>날씨 정보를 불러오는 중...</div>;
   if (weatherQuery.isError || forecastQuery.isError) return <div>날씨 정보를 불러올 수 없습니다.</div>;
+
+  const addressText = addressQuery.isLoading
+    ? '위치 이름 불러오는 중...'
+    : addressQuery.isError
+      ? '위치 정보 없음'
+      : (addressQuery.data?.fullName ?? '위치 정보 없음');
 
   return (
     <div className="p-5">
-      <h1 className="text-lg font-bold">현재 위치: {addressQuery.data?.fullName ?? '위치 정보 없음'}</h1>
+      <h1 className="text-lg font-bold">현재 위치: {addressText}</h1>
 
       <p>현재 기온: {weatherQuery.data!.main.temp}°C</p>
       <p>최저 기온: {forecastQuery.data!.min}°C</p>
