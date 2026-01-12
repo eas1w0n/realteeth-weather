@@ -1,7 +1,7 @@
 import type { ForecastItem } from './types';
 
 // 오늘 날짜
-export function getTodayForecast(list: ForecastItem[]): ForecastItem[] {
+export function getTodayForecast(list: ForecastItem[]) {
   const now = new Date();
 
   const year = now.getFullYear();

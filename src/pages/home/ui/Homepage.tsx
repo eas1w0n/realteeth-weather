@@ -1,6 +1,9 @@
 import { useEffect, useState } from 'react';
 import { getCurrentPosition } from '@/shared/lib/geolocation';
 import { useHomeWeather } from '@/entities/weather/hooks/useWeather';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { formatTemp } from '@/shared/lib/utils';
+import MenuIcon from '@/assets/icons/menu.svg?react';
 
 export function HomePage() {
   const [coords, setCoords] = useState<{
@@ -40,21 +43,44 @@ export function HomePage() {
       : (addressQuery.data?.fullName ?? '위치 정보 없음');
 
   return (
-    <div className="p-5">
-      <h1 className="text-lg font-bold">현재 위치: {addressText}</h1>
+    <div className="flex min-h-screen items-center justify-center bg-slate-50">
+      <main className="relative mx-auto min-h-screen w-full max-w-150 space-y-4 px-4 py-6">
+        {/* 헤더 */}
+        <header className="flex h-12 items-center justify-end">
+          <button className="absolute right-4 p-2 text-gray-600 transition hover:text-black active:text-gray-400">
+            <MenuIcon className="h-6 w-6" />
+          </button>
+        </header>
 
-      <p>현재 기온: {weatherQuery.data!.main.temp}°C</p>
-      <p>최저 기온: {forecastQuery.data!.min}°C</p>
-      <p>최고 기온: {forecastQuery.data!.max}°C</p>
+        {/**현재 위치 */}
+        <section className="flex flex-col items-center gap-8 py-7">
+          <p className="text-xl sm:text-4xl">{addressText}</p>
 
-      <h3 className="mt-4 font-bold">오늘 시간대별 기온</h3>
-      <ul>
-        {forecastQuery.data!.hourlyTemps.map(item => (
-          <li key={item.time}>
-            {item.time} / {item.temp}°C
-          </li>
-        ))}
-      </ul>
+          <p className="text-6xl leading-none font-semibold sm:text-8xl">{weatherQuery.data!.main.temp}°</p>
+
+          <p className="text-muted-foreground text-base sm:text-2xl">
+            최고:{formatTemp(forecastQuery.data!.max)}° 최저:{formatTemp(forecastQuery.data!.min)}°
+          </p>
+        </section>
+
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-sm font-medium sm:text-xl">오늘 시간대별 기온</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ul className="space-y-2">
+              {forecastQuery.data!.hourlyTemps.map(item => (
+                <li
+                  key={item.time}
+                  className="flex justify-between border-b border-gray-200 p-2 text-xl last:border-b-0 sm:text-2xl">
+                  <span className="text-muted-foreground">{item.time}</span>
+                  <span className="font-medium">{formatTemp(item.temp)}°</span>
+                </li>
+              ))}
+            </ul>
+          </CardContent>
+        </Card>
+      </main>
     </div>
   );
 }
