@@ -58,7 +58,7 @@ export function HomePage() {
         </header>
 
         {/**현재 위치 */}
-        <section className="flex flex-col items-center gap-8 py-7">
+        <section className="flex flex-col items-center gap-6 py-3">
           <p className="text-xl sm:text-4xl">{addressText}</p>
 
           <p className="text-6xl leading-none font-semibold sm:text-8xl">{weatherQuery.data!.main.temp}°</p>
