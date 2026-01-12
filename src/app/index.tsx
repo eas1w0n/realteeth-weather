@@ -6,6 +6,7 @@ import { HomePage } from '@/pages/home/HomePage';
 import { SearchPage } from '@/pages/search/ui/SearchPage';
 import { FavoriteList } from '@/pages/search/ui/FavoriteList';
 import { SearchResultList } from '@/pages/search/ui/SearchResultList';
+import { FavoriteWeatherPage } from '@/pages/weather/ui/FavortieWeatherPage';
 
 function App() {
   return (
@@ -17,6 +18,8 @@ function App() {
           <Route index element={<FavoriteList />} />
           <Route path="result" element={<SearchResultList />} />
         </Route>
+
+        <Route path="/favorite/:city" element={<FavoriteWeatherPage />} />
       </Route>
     </Routes>
   );

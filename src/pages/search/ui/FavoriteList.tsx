@@ -39,8 +39,7 @@ export function FavoriteList() {
             className={`relative flex-1 rounded-2xl border-0 bg-slate-100 px-6 py-5 transition-all duration-150 ${!isEditMode ? 'cursor-pointer hover:bg-slate-200 hover:shadow-md active:scale-[0.98] active:bg-slate-300' : ''} ${isEditMode ? 'pr-14' : ''} `}
             onClick={() => {
               if (isEditMode) return;
-              console.log(item.city);
-              // navigate(`/weather/${item.city}`);
+              navigate(`/favorite/${item.city}`);
             }}>
             <div className="flex items-center justify-between">
               {/* 도시명 */}
