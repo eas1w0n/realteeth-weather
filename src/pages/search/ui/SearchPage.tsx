@@ -1,5 +1,5 @@
-import { Outlet } from 'react-router';
-import { useState } from 'react';
+import { Outlet, useNavigate } from 'react-router';
+import { useEffect, useState } from 'react';
 import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
 import MenuIcon from '@/assets/icons/menu.svg?react';
 import SearchIcon from '@/assets/icons/search.svg?react';
@@ -7,6 +7,16 @@ import SearchIcon from '@/assets/icons/search.svg?react';
 export function SearchPage() {
   const [keyword, setKeyword] = useState('');
   const hasKeyword = keyword.trim().length > 0;
+  const navigate = useNavigate();
+
+  // keyword 변화에 따라 라우팅
+  useEffect(() => {
+    if (hasKeyword) {
+      navigate(`/search/result?q=${keyword}`, { replace: true });
+    } else {
+      navigate('/search', { replace: true });
+    }
+  }, [hasKeyword, keyword, navigate]);
 
   return (
     <div className="mx-auto min-h-screen w-full max-w-150 bg-white px-5 py-6">
