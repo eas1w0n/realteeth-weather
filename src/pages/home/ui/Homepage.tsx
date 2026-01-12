@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router';
 import { getCurrentPosition } from '@/shared/lib/geolocation';
 import { useHomeWeather } from '@/entities/weather/hooks/useWeather';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
@@ -12,6 +13,8 @@ export function HomePage() {
   } | null>(null);
 
   const [error, setError] = useState<string | null>(null);
+
+  const navigate = useNavigate();
 
   // 위치 요청
   useEffect(() => {
@@ -43,12 +46,14 @@ export function HomePage() {
       : (addressQuery.data?.fullName ?? '위치 정보 없음');
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50">
+    <div className="flex min-h-screen items-center justify-center">
       <main className="relative mx-auto min-h-screen w-full max-w-150 space-y-4 px-4 py-6">
         {/* 헤더 */}
         <header className="flex h-12 items-center justify-end">
-          <button className="absolute right-4 p-2 text-gray-600 transition hover:text-black active:text-gray-400">
-            <MenuIcon className="h-6 w-6" />
+          <button
+            className="absolute right-4 p-2 text-gray-600 transition hover:text-black active:text-gray-400"
+            onClick={() => navigate('/search')}>
+            <MenuIcon className="h-10 w-10" />
           </button>
         </header>
 
