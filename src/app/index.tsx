@@ -1,7 +1,7 @@
 import { Routes, Route } from 'react-router';
 import { RootLayout } from './ui/RootLayout';
 
-import { HomePage } from '@/pages/home/ui/HomePage';
+import { HomePage } from '@/pages/home/HomePage';
 
 import { SearchPage } from '@/pages/search/ui/SearchPage';
 import { FavoriteList } from '@/pages/search/ui/FavoriteList';

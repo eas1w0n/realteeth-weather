@@ -2,9 +2,8 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { getCurrentPosition } from '@/shared/lib/geolocation';
 import { useHomeWeather } from '@/entities/weather/hooks/useWeather';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { formatTemp } from '@/shared/lib/utils';
 import MenuIcon from '@/assets/icons/menu.svg?react';
+import { WeatherDetail } from '../weather/ui/WeatherDetail';
 
 export function HomePage() {
   const [coords, setCoords] = useState<{
@@ -57,34 +56,13 @@ export function HomePage() {
           </button>
         </header>
 
-        {/**현재 위치 */}
-        <section className="flex flex-col items-center gap-6 py-3">
-          <p className="text-xl sm:text-4xl">{addressText}</p>
-
-          <p className="text-6xl leading-none font-semibold sm:text-8xl">{weatherQuery.data!.main.temp}°</p>
-
-          <p className="text-muted-foreground text-base sm:text-2xl">
-            최고:{formatTemp(forecastQuery.data!.max)}° 최저:{formatTemp(forecastQuery.data!.min)}°
-          </p>
-        </section>
-
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-sm font-medium sm:text-xl">오늘 시간대별 기온</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <ul className="space-y-2">
-              {forecastQuery.data!.hourlyTemps.map(item => (
-                <li
-                  key={item.time}
-                  className="flex justify-between border-b border-gray-200 p-2 text-xl last:border-b-0 sm:text-2xl">
-                  <span className="text-muted-foreground">{item.time}</span>
-                  <span className="font-medium">{formatTemp(item.temp)}°</span>
-                </li>
-              ))}
-            </ul>
-          </CardContent>
-        </Card>
+        <WeatherDetail
+          addressText={addressText}
+          temp={weatherQuery.data!.main.temp}
+          max={forecastQuery.data!.max}
+          min={forecastQuery.data!.min}
+          hourlyTemps={forecastQuery.data!.hourlyTemps}
+        />
       </main>
     </div>
   );
