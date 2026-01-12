@@ -24,8 +24,7 @@ export function SearchResultList() {
           key={item.id}
           className="cursor-pointer px-2 py-4 transition hover:bg-slate-100 active:bg-slate-200"
           onClick={() => {
-            console.log('선택:', item.city);
-            // navigate(`/weather/${item.city}`);
+            navigate(`/search/weather/${item.city}`);
           }}>
           <p className="text-base font-medium">{item.city}</p>
           <p className="text-muted-foreground text-sm">{item.country}</p>
