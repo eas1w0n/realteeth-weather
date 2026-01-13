@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router';
 import { getCurrentPosition } from '@/shared/lib/geolocation';
-import { useHomeWeather } from '@/entities/weather/hooks/useWeather';
+import { useWeather } from '@/entities/weather/hooks/useWeather';
 import MenuIcon from '@/assets/icons/menu.svg?react';
 import { WeatherDetail } from '../weather/ui/WeatherDetail';
 
@@ -29,20 +29,29 @@ export function HomePage() {
       });
   }, []);
 
-  const { weatherQuery, forecastQuery, addressQuery } = useHomeWeather(coords);
+  const { data, isLoading, isError } = useWeather(coords);
 
   // -------- UI 분기 --------
   if (error) return <div>{error}</div>;
-  if (!coords) return <div>위치 정보를 불러오는 중...</div>;
+  if (!coords)
+    return (
+      <div className="text-muted-foreground flex min-h-screen items-center justify-center text-center text-sm">
+        위치 정보를 불러오는 중...
+      </div>
+    );
 
-  if (weatherQuery.isLoading || forecastQuery.isLoading) return <div>날씨 정보를 불러오는 중...</div>;
-  if (weatherQuery.isError || forecastQuery.isError) return <div>날씨 정보를 불러올 수 없습니다.</div>;
-
-  const addressText = addressQuery.isLoading
-    ? '위치 이름 불러오는 중...'
-    : addressQuery.isError
-      ? '위치 정보 없음'
-      : (addressQuery.data?.fullName ?? '위치 정보 없음');
+  if (isLoading)
+    return (
+      <div className="text-muted-foreground flex min-h-screen items-center justify-center text-center text-sm">
+        날씨 정보를 불러오는 중...
+      </div>
+    );
+  if (isError || !data)
+    return (
+      <div className="text-muted-foreground flex min-h-screen items-center justify-center text-center text-sm">
+        날씨 정보를 불러올 수 없습니다.
+      </div>
+    );
 
   return (
     <div className="flex min-h-screen items-center justify-center">
@@ -57,11 +66,11 @@ export function HomePage() {
         </header>
         <p className="text-muted-foreground flex items-center justify-center text-sm sm:text-base">현재 위치</p>
         <WeatherDetail
-          addressText={addressText}
-          temp={weatherQuery.data!.main.temp}
-          max={forecastQuery.data!.max}
-          min={forecastQuery.data!.min}
-          hourlyTemps={forecastQuery.data!.hourlyTemps}
+          addressText={data.address ?? '위치 정보 없음'}
+          temp={data.temp}
+          max={data.max}
+          min={data.min}
+          hourlyTemps={data.hourlyTemps}
         />
       </main>
     </div>
