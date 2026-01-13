@@ -1,44 +1,49 @@
 import { create } from 'zustand';
 
-export type FavoriteWeather = {
+export interface FavoriteWeather {
   id: number;
   city: string;
   temp: number;
   max: number;
   min: number;
-};
+}
 
-type FavoriteState = {
+interface FavoriteState {
   favorites: FavoriteWeather[];
-  addFavorite: (item: Omit<FavoriteWeather, 'id'>) => void;
+  errorMessage: string | null;
+  addFavorite: (item: Omit<FavoriteWeather, 'id'>) => boolean;
   removeFavorite: (id: number) => void;
-  isFavorite: (city: string) => boolean;
-};
+}
 
 export const useFavoriteStore = create<FavoriteState>((set, get) => ({
   favorites: [],
+  errorMessage: null,
 
-  addFavorite: item =>
-    set(state => {
-      // 중복(도시명 기준) 방지
-      const exists = state.favorites.some(f => f.city === item.city);
-      if (exists) return state;
+  addFavorite: item => {
+    const { favorites } = get();
 
-      return {
-        favorites: [
-          ...state.favorites,
-          {
-            id: Date.now(),
-            ...item,
-          },
-        ],
-      };
-    }),
+    // 최대 개수 제한
+    if (favorites.length >= 6) {
+      set({ errorMessage: '즐겨찾기는 최대 6개까지 추가할 수 있어요.' });
+      return false;
+    }
+
+    // 중복(도시명 기준) 방지
+    const exists = favorites.some(f => f.city === item.city);
+    if (exists) {
+      return false;
+    }
+
+    set({
+      favorites: [...favorites, { id: Date.now(), ...item }],
+      errorMessage: null,
+    });
+
+    return true;
+  },
 
   removeFavorite: id =>
     set(state => ({
       favorites: state.favorites.filter(f => f.id !== id),
     })),
-
-  isFavorite: city => get().favorites.some(f => f.city === city),
 }));

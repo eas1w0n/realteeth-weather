@@ -16,7 +16,7 @@ export function SearchWeatherPage() {
   const address = decodeURIComponent(city ?? '');
 
   const addFavorite = useFavoriteStore(state => state.addFavorite);
-  const isFavorite = useFavoriteStore(state => state.isFavorite);
+  const errorMessage = useFavoriteStore(state => state.errorMessage);
 
   const {
     data: geo,
@@ -35,19 +35,16 @@ export function SearchWeatherPage() {
   const handleAddFavorite = () => {
     if (!data) return;
 
-    if (isFavorite(address)) {
-      navigate('/favorite');
-      return;
-    }
-
-    addFavorite({
+    const success = addFavorite({
       city: address,
       temp: data.temp,
       min: data.min,
       max: data.max,
     });
 
-    navigate('/search');
+    if (success) {
+      navigate('/search');
+    }
   };
 
   let content: React.ReactNode = null;
@@ -90,6 +87,10 @@ export function SearchWeatherPage() {
         </header>
 
         {content}
+
+        {errorMessage && (
+          <p className="mt-2 text-center text-base font-semibold text-red-500 sm:text-xl">{errorMessage}</p>
+        )}
       </main>
     </div>
   );
