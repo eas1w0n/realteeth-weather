@@ -1,33 +1,27 @@
 import { useNavigate, useSearchParams } from 'react-router';
-
-const MOCK_RESULTS = [
-  { id: 1, city: '대전', country: 'KR' },
-  { id: 2, city: '대구', country: 'KR' },
-  { id: 3, city: '대전광역시', country: 'KR' },
-  { id: 4, city: '서울', country: 'KR' },
-  { id: 5, city: 'Denver', country: 'US' },
-];
+import { normalizeDistricts } from '@/shared/lib/location/normalizeDistricts';
+import { searchDistricts } from '@/shared/lib/location/searchDistricts';
+import { useMemo } from 'react';
 
 export function SearchResultList() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const query = searchParams.get('q')?.trim() ?? '';
+  const districts = useMemo(() => normalizeDistricts(), []);
+  const results = useMemo(() => searchDistricts(districts, query), [districts, query]);
 
   if (!query) return null;
 
-  const results = MOCK_RESULTS.filter(item => item.city.includes(query));
-
   return (
     <ul className="mt-4 divide-y divide-slate-200">
-      {results.map(item => (
+      {results.map(d => (
         <li
-          key={item.id}
+          key={d.fullName}
           className="cursor-pointer px-2 py-4 transition hover:bg-slate-100 active:bg-slate-200"
           onClick={() => {
-            navigate(`/search/weather/${item.city}`);
+            navigate(`/search/weather/${d.fullName}`);
           }}>
-          <p className="text-base font-medium">{item.city}</p>
-          <p className="text-muted-foreground text-sm">{item.country}</p>
+          <p className="text-base font-medium">{d.fullName}</p>
         </li>
       ))}
 

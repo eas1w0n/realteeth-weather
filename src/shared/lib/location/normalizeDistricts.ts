@@ -5,7 +5,7 @@ export interface NormalizedDistrict extends RawDistrict {
   fullName: string;
 }
 
-export function nomalizedDistricts(): NormalizedDistrict[] {
+export function normalizeDistricts(): NormalizedDistrict[] {
   return (raw as string[]).map(value => {
     const [sido, sigungu, dong] = value.split('-');
 
@@ -13,7 +13,7 @@ export function nomalizedDistricts(): NormalizedDistrict[] {
       sido,
       sigungu,
       dong,
-      fullName: [sido, sigungu, dong].filter(Boolean).join(''),
+      fullName: [sido, sigungu, dong].filter(Boolean).join(' '),
     };
   });
 }
