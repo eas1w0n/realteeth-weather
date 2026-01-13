@@ -1,11 +1,12 @@
 import { useNavigate, useParams } from 'react-router';
-import { useQuery } from '@tanstack/react-query';
+import { useWeather } from '@/entities/weather/hooks/useWeather';
 
 import AddIcon from '@/assets/icons/add.svg?react';
 import CancelIcon from '@/assets/icons/cancel.svg?react';
 
 import { WeatherDetail } from './WeatherDetail';
 import { fetchGeocoding } from '@/shared/api/geocoding';
+import { useQuery } from '@tanstack/react-query';
 
 export function SearchWeatherPage() {
   const navigate = useNavigate();
@@ -14,13 +15,17 @@ export function SearchWeatherPage() {
 
   const {
     data: geo,
-    isLoading,
-    isError,
+    isLoading: geoLoading,
+    isError: geoError,
   } = useQuery({
     queryKey: ['geocoding', address],
     queryFn: () => fetchGeocoding(address),
     enabled: !!address,
   });
+
+  const coords = geo ? { lat: geo.lat, lon: geo.lon } : null;
+
+  const { data, isLoading: weatherLoading, isError: weatherError } = useWeather(coords);
 
   const handleAddFavorite = () => {
     // - 즐겨찾기에 추가
@@ -30,31 +35,22 @@ export function SearchWeatherPage() {
 
   let content: React.ReactNode = null;
 
-  if (isLoading) {
+  if (geoLoading) {
     content = <p className="text-muted-foreground py-20 text-center text-sm">위치 정보를 불러오는 중입니다...</p>;
-  } else if (!geo || isError) {
+  } else if (!geo || geoError) {
+    content = <p className="text-muted-foreground py-20 text-center text-sm">해당 장소의 정보가 제공되지 않습니다.</p>;
+  } else if (weatherLoading) {
+    content = <p className="text-muted-foreground py-20 text-center text-sm">날씨 정보를 불러오는 중입니다...</p>;
+  } else if (weatherError || !data) {
     content = <p className="text-muted-foreground py-20 text-center text-sm">해당 장소의 정보가 제공되지 않습니다.</p>;
   } else {
-    const mock = {
-      addressText: address,
-      temp: 31,
-      max: 32,
-      min: 21,
-      hourlyTemps: [
-        { time: '09시', temp: 26 },
-        { time: '12시', temp: 30 },
-        { time: '15시', temp: 31 },
-        { time: '18시', temp: 29 },
-      ],
-    };
-
     content = (
       <WeatherDetail
-        addressText={mock.addressText}
-        temp={mock.temp}
-        max={mock.max}
-        min={mock.min}
-        hourlyTemps={mock.hourlyTemps}
+        addressText={data.address ?? address}
+        temp={data.temp}
+        min={data.min}
+        max={data.max}
+        hourlyTemps={data.hourlyTemps}
       />
     );
   }
