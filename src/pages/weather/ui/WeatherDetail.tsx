@@ -1,5 +1,5 @@
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { formatTemp } from '@/shared/lib/utils';
+import { formatTemp } from '@/shared/lib/utils/formatTemp';
 
 interface Props {
   addressText: string;
