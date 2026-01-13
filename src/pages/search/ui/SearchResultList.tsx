@@ -14,12 +14,12 @@ export function SearchResultList() {
 
   return (
     <ul className="mt-4 divide-y divide-slate-200">
-      {results.map(d => (
+      {results.map((d, index) => (
         <li
-          key={d.fullName}
+          key={`${d.fullName}-${index}`}
           className="cursor-pointer px-2 py-4 transition hover:bg-slate-100 active:bg-slate-200"
           onClick={() => {
-            navigate(`/search/weather/${d.fullName}`);
+            navigate(`/search/weather/${encodeURIComponent(d.fullName)}`);
           }}>
           <p className="text-base font-medium">{d.fullName}</p>
         </li>

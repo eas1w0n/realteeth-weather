@@ -1,5 +1,6 @@
 import { BASE_URL } from '../lib/constants';
 import { GEO_API_PATH } from '../lib/constants';
+import axios from 'axios';
 
 const WEATHER_API_KEY = import.meta.env.VITE_OPENWEATHER_API_KEY;
 export interface Address {
@@ -34,4 +35,16 @@ export async function fetchAddressFromCoords(lat: number, lon: number): Promise<
     depth3: address.local_names?.ko,
     fullName: address.state ? `${address.state} ${koName}` : koName,
   };
+}
+
+export async function fetchGeocoding(address: string) {
+  const res = await axios.get(`${BASE_URL}${GEO_API_PATH}/direct`, {
+    params: {
+      q: address,
+      limit: 1,
+      appid: WEATHER_API_KEY,
+    },
+  });
+
+  return res.data[0] ?? null;
 }
