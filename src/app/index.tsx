@@ -6,7 +6,7 @@ import { HomePage } from '@/pages/home/HomePage';
 import { SearchPage } from '@/pages/search/ui/SearchPage';
 import { FavoriteList } from '@/pages/search/ui/FavoriteList';
 import { SearchResultList } from '@/pages/search/ui/SearchResultList';
-import { FavoriteWeatherPage } from '@/pages/weather/ui/FavortieWeatherPage';
+import { FavoriteWeatherPage } from '@/pages/weather/ui/FavoriteWeatherPage';
 import { SearchWeatherPage } from '@/pages/weather/ui/SearchWeatherPage';
 
 function App() {
