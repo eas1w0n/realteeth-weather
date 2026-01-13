@@ -12,7 +12,7 @@ interface Props {
 export function WeatherDetail({ addressText, temp, max, min, hourlyTemps }: Props) {
   return (
     <>
-      <section className="flex flex-col items-center gap-6 py-3">
+      <section className="flex flex-col items-center gap-6 py-3 pt-0">
         <p className="text-xl sm:text-4xl">{addressText}</p>
 
         <p className="text-6xl leading-none font-semibold sm:text-8xl">{formatTemp(temp)}°</p>

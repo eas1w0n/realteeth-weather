@@ -55,7 +55,7 @@ export function HomePage() {
             <MenuIcon className="h-10 w-10" />
           </button>
         </header>
-
+        <p className="text-muted-foreground flex items-center justify-center text-sm sm:text-base">현재 위치</p>
         <WeatherDetail
           addressText={addressText}
           temp={weatherQuery.data!.main.temp}

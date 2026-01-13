@@ -23,32 +23,27 @@ export function SearchWeatherPage() {
 
   const handleAddFavorite = () => {
     // - 즐겨찾기에 추가
+    // - 즐겨찾기 목록 페이지로 이동
     console.log('즐겨찾기 추가:', city);
   };
 
   return (
     <div className="flex min-h-screen items-center justify-center">
       <main className="relative mx-auto min-h-screen w-full max-w-150 space-y-4 px-4 py-6">
-        {/* 🔝 헤더: X + + */}
         <header className="relative flex h-12 items-center justify-between">
-          {/* X 버튼 */}
           <button
             className="p-2 text-gray-600 transition hover:text-black active:text-gray-400"
-            onClick={() => navigate(-1)}
-            aria-label="검색 화면으로 돌아가기">
+            onClick={() => navigate(-1)}>
             <CancelIcon className="h-8 w-8" />
           </button>
 
-          {/* + 버튼 */}
           <button
             className="p-2 text-gray-600 transition hover:text-black active:text-gray-400"
-            onClick={handleAddFavorite}
-            aria-label="즐겨찾기 추가">
+            onClick={handleAddFavorite}>
             <AddIcon className="h-8 w-8" />
           </button>
         </header>
 
-        {/* 공통 날씨 상세 UI */}
         <WeatherDetail
           addressText={mock.addressText}
           temp={mock.temp}
