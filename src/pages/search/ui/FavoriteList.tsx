@@ -30,7 +30,7 @@ export function FavoriteList() {
             }}>
             <div className="flex items-center justify-between">
               {/* 도시명 */}
-              <p className="text-xl sm:text-2xl">{item.alias || item.city}</p>
+              <p className="text-base sm:text-2xl">{item.alias || item.city}</p>
 
               {/* 온도 영역 */}
               <div className="text-right">

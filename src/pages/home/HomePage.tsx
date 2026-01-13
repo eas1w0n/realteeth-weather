@@ -5,6 +5,9 @@ import { useWeather } from '@/entities/weather/hooks/useWeather';
 import MenuIcon from '@/assets/icons/menu.svg?react';
 import { WeatherDetail } from '../weather/ui/WeatherDetail';
 
+import { AlertCircleIcon } from 'lucide-react';
+import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+
 export function HomePage() {
   const [coords, setCoords] = useState<{
     lat: number;
@@ -32,7 +35,18 @@ export function HomePage() {
   const { data, isLoading, isError } = useWeather(coords);
 
   // -------- UI 분기 --------
-  if (error) return <div>{error}</div>;
+  if (error)
+    return (
+      <div className="flex min-h-screen items-center justify-center px-4">
+        <Alert variant="destructive">
+          <AlertCircleIcon />
+          <AlertTitle>위치 정보를 불러올 수 없습니다</AlertTitle>
+          <AlertDescription>
+            <p>브라우저에서 위치 권한을 허용해주세요</p>
+          </AlertDescription>
+        </Alert>
+      </div>
+    );
   if (!coords)
     return (
       <div className="text-muted-foreground flex min-h-screen items-center justify-center text-center text-sm">
