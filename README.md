@@ -43,7 +43,7 @@ npm install
 ```
 
 # 3. 환경 변수 설정
-# .env 파일 생성 후 아래 값 추가
+.env 파일 생성 후 아래 값 추가
 ```bash
 VITE_WEATHER_API_KEY=YOUR_API_KEY
 ```
