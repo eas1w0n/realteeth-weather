@@ -8,10 +8,15 @@ import { WeatherDetail } from './WeatherDetail';
 import { fetchGeocoding } from '@/shared/api/geocoding';
 import { useQuery } from '@tanstack/react-query';
 
+import { useFavoriteStore } from '@/entities/favortie/store/useFavoriteStore';
+
 export function SearchWeatherPage() {
   const navigate = useNavigate();
   const { city } = useParams<{ city: string }>();
   const address = decodeURIComponent(city ?? '');
+
+  const addFavorite = useFavoriteStore(state => state.addFavorite);
+  const isFavorite = useFavoriteStore(state => state.isFavorite);
 
   const {
     data: geo,
@@ -28,9 +33,21 @@ export function SearchWeatherPage() {
   const { data, isLoading: weatherLoading, isError: weatherError } = useWeather(coords);
 
   const handleAddFavorite = () => {
-    // - 즐겨찾기에 추가
-    // - 즐겨찾기 목록 페이지로 이동
-    console.log('즐겨찾기 추가:', address);
+    if (!data) return;
+
+    if (isFavorite(address)) {
+      navigate('/favorite');
+      return;
+    }
+
+    addFavorite({
+      city: address,
+      temp: data.temp,
+      min: data.min,
+      max: data.max,
+    });
+
+    navigate('/search');
   };
 
   let content: React.ReactNode = null;

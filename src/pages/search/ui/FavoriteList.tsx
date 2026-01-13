@@ -4,27 +4,14 @@ import { useNavigate } from 'react-router';
 import MinusIcon from '@/assets/icons/minus.svg?react';
 import TrashIcon from '@/assets/icons/trash.svg?react';
 
-type FavoriteWeather = {
-  id: number;
-  city: string;
-  temp: number;
-  max: number;
-  min: number;
-};
+import { useFavoriteStore } from '@/entities/favortie/store/useFavoriteStore';
 
 export function FavoriteList() {
   const [isEditMode, setIsEditMode] = useState(false);
   const navigate = useNavigate();
 
-  /** 임시 mock 데이터 */
-  const favorites: FavoriteWeather[] = [
-    { id: 1, city: '대전', temp: 31, max: 32, min: 21 },
-    { id: 2, city: '대전', temp: 31, max: 32, min: 21 },
-    { id: 3, city: '대전', temp: 31, max: 32, min: 21 },
-    { id: 4, city: '대전', temp: 31, max: 32, min: 21 },
-    { id: 5, city: '대전', temp: 31, max: 32, min: 21 },
-    { id: 6, city: '대전', temp: 31, max: 32, min: 21 },
-  ];
+  const favorites = useFavoriteStore(state => state.favorites);
+  const removeFavorite = useFavoriteStore(state => state.removeFavorite);
 
   return (
     <ul className="mt-5 space-y-5">
@@ -59,7 +46,7 @@ export function FavoriteList() {
               <button
                 onClick={e => {
                   e.stopPropagation();
-                  console.log('삭제:', item.city);
+                  removeFavorite(item.id);
                 }}
                 className="absolute top-1/2 right-2 -translate-y-1/2 transition hover:scale-110 active:scale-95">
                 <TrashIcon />
