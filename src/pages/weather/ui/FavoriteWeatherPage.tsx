@@ -1,16 +1,28 @@
 import { useNavigate, useParams } from 'react-router';
-import MenuIcon from '@/assets/icons/menu.svg?react';
+
 import CancelIcon from '@/assets/icons/cancel.svg?react';
+import EditIcon from '@/assets/icons/pencil.svg?react';
 
 import { WeatherDetail } from '@/pages/weather/ui/WeatherDetail';
 import { fetchGeocoding } from '@/shared/api/geocoding';
 import { useQuery } from '@tanstack/react-query';
 import { useWeather } from '@/entities/weather/hooks/useWeather';
+import { useFavoriteStore } from '@/entities/favortie/store/useFavoriteStore';
+import { useState } from 'react';
+
+import { InputGroup, InputGroupAddon, InputGroupButton, InputGroupInput } from '@/components/ui/input-group';
 
 export function FavoriteWeatherPage() {
   const navigate = useNavigate();
   const { city } = useParams<{ city: string }>();
   const address = decodeURIComponent(city ?? '');
+
+  const favorite = useFavoriteStore(state => state.favorites.find(f => f.city === city));
+
+  const updateAlias = useFavoriteStore(state => state.updateAlias);
+
+  const [alias, setAlias] = useState(favorite?.alias ?? '');
+  const [isEditMode, setIsEditMode] = useState(false);
 
   const {
     data: geo,
@@ -61,10 +73,39 @@ export function FavoriteWeatherPage() {
 
           <button
             className="p-2 text-gray-600 transition hover:text-black active:text-gray-400"
-            onClick={() => navigate('/search')}>
-            <MenuIcon className="h-10 w-10" />
+            onClick={() => setIsEditMode(prev => !prev)}>
+            <EditIcon className="h-10 w-10" />
           </button>
         </header>
+
+        {/* 보기 모드: 별칭 표시 */}
+        {!isEditMode && favorite?.alias && (
+          <p className="text-muted-foreground mb-2 text-center text-sm">{favorite.alias}</p>
+        )}
+
+        {isEditMode && (
+          <div className="mb-4 rounded-full border-0">
+            <InputGroup className="h-12 rounded-full bg-white px-4 text-sm focus:bg-white">
+              <InputGroupInput
+                value={alias}
+                onChange={e => setAlias(e.target.value)}
+                placeholder="별칭을 입력해주세요 (예: 우리집)"
+              />
+
+              <InputGroupAddon align="inline-end">
+                <InputGroupButton
+                  className="h-8 w-15 bg-gray-600 text-white transition-colors active:bg-gray-400"
+                  onClick={() => {
+                    if (!favorite) return;
+                    updateAlias(favorite.id, alias.trim());
+                    setIsEditMode(false);
+                  }}>
+                  저장
+                </InputGroupButton>
+              </InputGroupAddon>
+            </InputGroup>
+          </div>
+        )}
 
         {content}
       </main>

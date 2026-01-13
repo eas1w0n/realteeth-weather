@@ -3,6 +3,7 @@ import { create } from 'zustand';
 export interface FavoriteWeather {
   id: number;
   city: string;
+  alias?: string;
   temp: number;
   max: number;
   min: number;
@@ -13,6 +14,7 @@ interface FavoriteState {
   errorMessage: string | null;
   addFavorite: (item: Omit<FavoriteWeather, 'id'>) => boolean;
   removeFavorite: (id: number) => void;
+  updateAlias: (id: number, alias: string) => void;
 }
 
 export const useFavoriteStore = create<FavoriteState>((set, get) => ({
@@ -45,5 +47,10 @@ export const useFavoriteStore = create<FavoriteState>((set, get) => ({
   removeFavorite: id =>
     set(state => ({
       favorites: state.favorites.filter(f => f.id !== id),
+    })),
+
+  updateAlias: (id, alias) =>
+    set(state => ({
+      favorites: state.favorites.map(f => (f.id === id ? { ...f, alias } : f)),
     })),
 }));
